@@ -1,0 +1,15 @@
+name: Magic-Utils
+version: 0.2
+main: com.magicutils.main.MagicUtilsMain
+load: POSTWORLD
+authors: ['EndMySuffering']
+api-version: 1.16
+
+commands:
+  mutils:
+    description: Root command for all Magic-Utils items.
+    usage: /mutils
+    aliases: [mu]
+
+softdepend:
+  - MysqlPlayerDataBridge
