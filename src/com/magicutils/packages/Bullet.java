@@ -1,21 +1,23 @@
 package com.magicutils.packages;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
-import net.minecraft.server.v1_16_R3.WorldGenSurfaceTaigaMega;
 
 public class Bullet {
 
@@ -26,6 +28,8 @@ public class Bullet {
 	private Entity firedBy;
 	private int lifeTime;
 	private Particle particle, impactParticle;
+	
+//	private boolean debug = false;
 	
 	public Bullet(Particle particle, Particle impectParticle, double speed, double damage, int liveSpan, Vector dir, Vector loc, World w, Entity firedBy) {
 		this.dir = dir;
@@ -39,6 +43,9 @@ public class Bullet {
 		this.impactParticle = impectParticle;
 		
 		this.dir = this.dir.normalize().multiply(speed);
+		
+		w.playSound(new Location(w, prefLoc.getX(), prefLoc.getY(), prefLoc.getZ()), Sound.ENTITY_BLAZE_SHOOT, 1f, 1.5f);
+		
 	}
 	
 	public void updateLocation() {
@@ -48,6 +55,7 @@ public class Bullet {
 			this.impact(loc);
 			return;
 		}
+
 		this.lifeTime--;
 		this.prefLoc = loc.clone();
 		this.loc = this.loc.add(dir);
@@ -71,7 +79,7 @@ public class Bullet {
 		}else if(b == null && entity == null) {
 			drawProjectile();
 		}
-		
+//		debug = true;
 		
 	}
 	
@@ -97,7 +105,7 @@ public class Bullet {
 		for(Entity e : w.getEntities()) {
 			if(e instanceof LivingEntity) {
 				double d = e.getBoundingBox().getCenter().distance(loc);
-				if(d < 3) {
+				if(d < 50000) {
 					LivingEntity entity = (LivingEntity) e;
 					entity.damage(damage*1/d, firedBy);
 					Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(firedBy, entity, DamageCause.ENTITY_ATTACK, this.damage));
@@ -111,14 +119,14 @@ public class Bullet {
 	private void drawProjectile() {
 		w.getPlayers().forEach(x -> {
 			if(x.getLocation().toVector().subtract(loc).length() <= 100 && alive) {
-				double d = 0.2;
-				PackageManager.SendParticalPackage(x, particle, loc.clone(), dir, (float)dir.length(),0);
-				PackageManager.SendParticalPackage(x, particle, loc.clone().add(new Vector(1*d,0,0)), dir, (float)dir.length(),0);
-				PackageManager.SendParticalPackage(x, particle, loc.clone().add(new Vector(0,1*d,0)), dir, (float)dir.length(),0);
-				PackageManager.SendParticalPackage(x, particle, loc.clone().add(new Vector(0,0,1*d)), dir, (float)dir.length(),0);
-				PackageManager.SendParticalPackage(x, particle, loc.clone().add(new Vector(-1*d,0,0)), dir, (float)dir.length(),0);
-				PackageManager.SendParticalPackage(x, particle, loc.clone().add(new Vector(0,-1*d,0)), dir, (float)dir.length(),0);
-				PackageManager.SendParticalPackage(x, particle, loc.clone().add(new Vector(0,0,-1*d)), dir, (float)dir.length(),0);
+				double d = 0.5;
+//				PackageManager.SendParticalPackage(x, particle, loc.clone(), dir, (float)dir.length(),0);
+				for(int i = 0; i < 5; i++) {
+					double offx = (new Random().nextDouble()-0.5)*2;
+					double offy = (new Random().nextDouble()-0.5)*2;
+					double offz = (new Random().nextDouble()-0.5)*2;
+					PackageManager.SendParticalPackage(x, particle, loc.clone().add(new Vector(d*offx,d*offy,d*offz)), dir, (float)dir.length()*0.5f,0);
+				}
 			}
 		});
 	}
@@ -134,7 +142,7 @@ public class Bullet {
 	    double tmin = Math.max(Math.max(Math.min(tx1, tx2), Math.min(ty1, ty2)), Math.min(tz1, tz2));
 	    double tmax = Math.min(Math.min(Math.max(tx1, tx2), Math.max(ty1, ty2)), Math.max(tz1, tz2));
 	    
-	    return tmax >= tmin && tmin < 1 && tmax < 1 && tmin > -0.5 && tmax > -0.5;
+	    return tmax >= tmin && tmin < 2 && tmax < 2 && tmin > -2 && tmax > -2;
 	}
 	
 	private double getClosestTmin(BoundingBox b) {
@@ -163,32 +171,28 @@ public class Bullet {
 	
 	private Block IntersectedBlock() {
 		
-		ArrayList<Block> possibleIntersect = new ArrayList<>();
+		Set<Block> possibleIntersect = new HashSet<>();
 		double l = dir.length();
 		double x = 0;
 		double y = 0;
 		double z = 0;
 		
 		for(double i = -0.5; i <= 1; i += 1/l) {
-			x = (i * dir.getX() + this.prefLoc.getX())-0.5;
+			x = (i * dir.getX() + this.prefLoc.getX());
 			y = (i * dir.getY() + this.prefLoc.getY());
-			z = (i * dir.getZ() + this.prefLoc.getZ())-0.5;
-
-			possibleIntersect.add(w.getBlockAt((int)x, (int)y, (int)z));
-			possibleIntersect.add(w.getBlockAt((int)x+1, (int)y, (int)z));
-			possibleIntersect.add(w.getBlockAt((int)x, (int)y+1, (int)z));
-			possibleIntersect.add(w.getBlockAt((int)x, (int)y, (int)z+1));
-			possibleIntersect.add(w.getBlockAt((int)x-1, (int)y, (int)z));
-			possibleIntersect.add(w.getBlockAt((int)x, (int)y-1, (int)z));
-			possibleIntersect.add(w.getBlockAt((int)x, (int)y, (int)z-1));
+			z = (i * dir.getZ() + this.prefLoc.getZ());
+			for(int ix = -1; ix < 1; ix++) {
+				for(int iy = -1; iy < 1; iy++) {
+					for(int iz = -1; iz < 1; iz++) {
+						possibleIntersect.add(w.getBlockAt((int)x+ix, (int)y+iy, (int)z+iz));
+					}
+				}
+			}
 			
 		}
 		
 		for(Block b : possibleIntersect) {
-
-			if(b != null && !b.getType().equals(Material.AIR)) {
-				PackageManager.SendBlockChangePackage(b, Material.RED_STAINED_GLASS, (Player)this.firedBy);
-			}
+//			if(debug)PackageManager.SendBlockChangePackage(b, Material.GLASS, (Player)this.firedBy);
 			if(slabAABB(b.getBoundingBox())) {
 				return b;
 			}
