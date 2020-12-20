@@ -186,14 +186,7 @@ public abstract class GUIBase {
 	public void refreshItems() {
 		if(inventory != null) {
 			inventory.clear();
-			items.keySet().stream().filter(x -> {
-				if(!itemPerms.keySet().contains(x) || !filterUnaccassable) return true;
-				boolean canAccess = false;
-				for(String s : itemPerms.get(x)) {
-					if(OpendBy.hasPermission(s)) canAccess = true;
-				}
-				return canAccess;
-			}).forEach(x -> inventory.setItem(x, items.get(x)));
+			items.keySet().stream().forEach(x -> inventory.setItem(x, items.get(x)));
 		}
 	}
 	

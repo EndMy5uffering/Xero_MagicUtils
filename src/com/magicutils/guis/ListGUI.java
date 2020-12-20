@@ -44,9 +44,9 @@ public class ListGUI extends GUIPages{
 		}else if(mode == 1) {
 			ItemStack staffEnchant = new ItemStack(Material.ENCHANTED_BOOK);
 			EnchantmentStorageMeta staffMeta = (EnchantmentStorageMeta) staffEnchant.getItemMeta();
-			staffMeta.addStoredEnchant(EnchantWrapper.STAFFWEAPON, 0, true);
+			staffMeta.addStoredEnchant(EnchantWrapper.STAFFWEAPON, 1, true);
 			staffMeta.setDisplayName("Staff-Weapon");
-			staffMeta.setLore(List.of("Staff-Weapon"));
+			staffMeta.setLore(List.of(ChatColor.WHITE+"Staff-Weapon"));
 			staffEnchant.setItemMeta(staffMeta);
 			List<ItemStack> items = List.of(staffEnchant);
 			this.setSorceList(items);

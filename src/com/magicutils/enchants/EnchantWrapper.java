@@ -11,25 +11,27 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemStack;
 
+import com.magicutils.main.MagicUtilsMain;
+
 public class EnchantWrapper extends Enchantment{
 
 	private final String name;
 	private final int maxlvl;
 	private final Set<ItemStack> canEnchant;
 	
-	public static final Enchantment STAFFWEAPON = new EnchantWrapper("staff-weapon", 10);
-	public static final Enchantment ZATGUN = new EnchantWrapper("zatniktel", 10);
+	public static final Enchantment STAFFWEAPON = new EnchantWrapper("staff-weapon", 1);
+	public static final Enchantment ZATGUN = new EnchantWrapper("zatniktel", 1);
 	public static final Enchantment ORI = new EnchantWrapper("ori-staff-weapon", 1);
 	
 	public EnchantWrapper(String name, int maxLvl) {
-		super(NamespacedKey.minecraft(name));
+		super(new NamespacedKey(MagicUtilsMain.plugin, name));
 		this.name = name;
 		this.maxlvl = maxLvl;
 		this.canEnchant = null;
 	}
 	
 	public EnchantWrapper(String namespace, String name, int maxLvl, Set<ItemStack> canEnchant) {
-		super(NamespacedKey.minecraft(namespace));
+		super(new NamespacedKey(MagicUtilsMain.plugin, name));
 		this.name = name;
 		this.maxlvl = maxLvl;
 		this.canEnchant = canEnchant;

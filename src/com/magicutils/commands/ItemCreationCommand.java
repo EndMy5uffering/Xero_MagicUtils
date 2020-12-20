@@ -6,9 +6,11 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -19,6 +21,7 @@ import com.google.common.collect.Lists;
 import com.magicutils.database.ItemDatabase;
 import com.magicutils.easygui.InventoryManager;
 import com.magicutils.enchants.EnchantWrapper;
+import com.magicutils.guis.EnchantUI;
 import com.magicutils.guis.ListGUI;
 import com.magicutils.main.MagicUtilsMain;
 import com.magicutils.potionitemutils.ItemEffect;
@@ -63,7 +66,7 @@ public class ItemCreationCommand implements TabExecutor{
 		PotionItems potionItem;
 		switch(args[0]) {
 		case "create":
-			if(!checkArgs(player, args, 2, "/portionitems create slot")) return true;
+			if(!checkArgs(player, args, 2, "/magicutils create slot")) return true;
 
 			if(inHand == null || inHand.getType().equals(Material.AIR)) {
 				player.sendMessage(ChatColor.RED + "You have to have the item, you want to add a potion effect to, in your hand!");
@@ -85,7 +88,7 @@ public class ItemCreationCommand implements TabExecutor{
 			player.sendMessage(ChatColor.GREEN + "HAVE FUN WITH YOUR NEW ITEM");
 			return true;
 		case "addeffect":
-			if(!checkArgs(player, args, 3, "/portionitems addeffect <effect> <lvl>")) return true;
+			if(!checkArgs(player, args, 3, "/magicutils addeffect <effect> <lvl>")) return true;
 			
 			if(!PotionItems.isValidEffect(args[1])) {
 				player.sendMessage(ChatColor.RED + args[1] + " <- Is not a valid PotionEffectType!");
@@ -105,7 +108,7 @@ public class ItemCreationCommand implements TabExecutor{
 			
 			if(potionItem == null) {
 				player.sendMessage(ChatColor.RED + "The item you are currently trying to add an effect to is not yet a potion item!");
-				player.sendMessage(ChatColor.RED + "Use: [/potionitems create] first");
+				player.sendMessage(ChatColor.RED + "Use: [/magicutils create] first");
 				return true;
 			}
 			
@@ -115,12 +118,12 @@ public class ItemCreationCommand implements TabExecutor{
 			return true;
 		case "addenchant":
 			
-			if(inHand != null && !inHand.getType().equals(Material.AIR)) {
-				inHand.addEnchantment(EnchantWrapper.STAFFWEAPON, 0);
-			}
+			EnchantUI ui = new EnchantUI(player);
+			if(ui.OpenGUI()) InventoryManager.addGUI(ui);
+			
 			return true;
 		case "set":
-			if(!checkArgs(player, args, 3, "/portionitems set <name|description> [text]")) return true;
+			if(!checkArgs(player, args, 3, "/magicutils set <name|description> [text]")) return true;
 			
 			if(inHand == null || inHand.getType().equals(Material.AIR)) {
 				player.sendMessage(ChatColor.RED + "You have to have the item, you want to add a potion effect to, in your hand!");
@@ -131,7 +134,7 @@ public class ItemCreationCommand implements TabExecutor{
 			
 			if(potionItem == null) {
 				player.sendMessage(ChatColor.RED + "The item you are currently trying to add an effect to is not yet a potion item!");
-				player.sendMessage(ChatColor.RED + "Use: [/potionitems create] first");
+				player.sendMessage(ChatColor.RED + "Use: [/magicutils create] first");
 				return true;
 			}
 			
@@ -189,7 +192,7 @@ public class ItemCreationCommand implements TabExecutor{
 			
 			if(potionItem == null) {
 				player.sendMessage(ChatColor.RED + "The item you are currently trying to add an effect to is not yet a potion item!");
-				player.sendMessage(ChatColor.RED + "Use: [/potionitems create] first");
+				player.sendMessage(ChatColor.RED + "Use: [/magicutils create] first");
 				return true;
 			}
 			
@@ -215,7 +218,7 @@ public class ItemCreationCommand implements TabExecutor{
 					
 					if(potionItem == null) {
 						player.sendMessage(ChatColor.RED + "The item you are currently trying to add an effect to is not yet a potion item!");
-						player.sendMessage(ChatColor.RED + "Use: [/potionitems create] first");
+						player.sendMessage(ChatColor.RED + "Use: [/magicutils create] first");
 						return true;
 					}
 					
@@ -223,7 +226,7 @@ public class ItemCreationCommand implements TabExecutor{
 						String preCommand = ChatColor.GOLD + "Effect: " + ChatColor.BLUE + x.getType().getName() + ChatColor.GOLD + " LVL: " + ChatColor.BLUE + x.getLevel() + " ";
 						TextComponent message = new TextComponent(preCommand);
 						TextComponent remove = new TextComponent("[REMOVE]");
-						remove.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/potionitems remove effect " + x.getType().getName()));
+						remove.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/magicutils remove effect " + x.getType().getName()));
 						remove.setColor(ChatColor.RED);
 						player.spigot().sendMessage(message, remove);
 					});
@@ -235,7 +238,7 @@ public class ItemCreationCommand implements TabExecutor{
 					
 					return true;
 					default: 
-						player.sendMessage("/potionitems list effects");
+						player.sendMessage("/magicutils list effects");
 						return true;
 				}
 			}
@@ -253,7 +256,7 @@ public class ItemCreationCommand implements TabExecutor{
 			
 			if(potionItem == null) {
 				player.sendMessage(ChatColor.RED + "The item you are currently trying to add an effect to is not yet a potion item!");
-				player.sendMessage(ChatColor.RED + "Use: [/potionitems create] first");
+				player.sendMessage(ChatColor.RED + "Use: [/magicutils create] first");
 				return true;
 			}
 			
@@ -289,7 +292,7 @@ public class ItemCreationCommand implements TabExecutor{
 			
 			if(potionItem == null) {
 				player.sendMessage(ChatColor.RED + "The item you are currently trying to add an effect to is not yet a potion item!");
-				player.sendMessage(ChatColor.RED + "Use: [/potionitems create] first");
+				player.sendMessage(ChatColor.RED + "Use: [/magicutils create] first");
 				return true;
 			}
 			
