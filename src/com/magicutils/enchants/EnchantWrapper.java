@@ -21,7 +21,7 @@ public class EnchantWrapper extends Enchantment{
 	
 	public static final Enchantment STAFFWEAPON = new EnchantWrapper("staff-weapon", 1);
 	public static final Enchantment ZATGUN = new EnchantWrapper("zatniktel", 1);
-	public static final Enchantment ORI = new EnchantWrapper("ori-staff-weapon", 1);
+	public static final Enchantment ORI = new EnchantWrapper("ori-weapon", 1);
 	
 	public EnchantWrapper(String name, int maxLvl) {
 		super(new NamespacedKey(MagicUtilsMain.plugin, name));
@@ -42,6 +42,10 @@ public class EnchantWrapper extends Enchantment{
 		
 		if(!enchants.contains(STAFFWEAPON))
 			registerEnchantment(STAFFWEAPON);
+		if(!enchants.contains(ZATGUN))
+			registerEnchantment(ZATGUN);
+		if(!enchants.contains(ORI))
+			registerEnchantment(ORI);
 		
 	}
 	
@@ -51,7 +55,7 @@ public class EnchantWrapper extends Enchantment{
 			Field f = Enchantment.class.getDeclaredField("acceptingNew");
 			f.setAccessible(true);
 			f.set(null, true);
-			Enchantment.registerEnchantment(STAFFWEAPON);
+			Enchantment.registerEnchantment(e);
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}

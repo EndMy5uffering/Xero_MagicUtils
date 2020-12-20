@@ -1,5 +1,8 @@
 package com.magicutils.guis;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -26,35 +29,26 @@ public class EnchantUI extends GUIBase{
 		this.addNoCancleRange(6);
 		
 		this.setGeneralFunction(x -> {
-			
 			if(x.index == 1) {
-				ItemStack item = x.event.getCursor();
+				ItemStack item = x.event.getCursor().clone();
 				if(item != null && !item.getType().equals(Material.AIR)) {
-					this.setItem(1, x.event.getCursor());
-					this.refreshItems();
-					return;
+					this.setItem(1, item);
 				}else if(item != null && item.getType().equals(Material.AIR)){
 					this.setItem(1, this.createItem("", null, Material.WHITE_STAINED_GLASS_PANE));
-					this.setItem(6, null);
-					this.refreshItems();
-					return;
 				}
+				this.refreshItems();
 			}
 			
 			if(x.index == 3) {
-				ItemStack item = x.event.getCursor();
+				ItemStack item = x.event.getCursor().clone();
 				if(item != null && !item.getType().equals(Material.AIR)) {
-					this.setItem(3, x.event.getCursor());
-					this.refreshItems();
-					return;
+					this.setItem(3, item);
 				}else if(item != null && item.getType().equals(Material.AIR)){
 					this.setItem(3, this.createItem("", null, Material.WHITE_STAINED_GLASS_PANE));
-					this.setItem(6, null);
-					this.refreshItems();
-					return;
 				}
+				this.refreshItems();
 			}
-			
+
 			if((this.getItem(1) != null && this.getItem(3) != null) && this.getItem(3).getType().equals(Material.ENCHANTED_BOOK)) {
 				ItemStack book = this.getItem(3);
 				EnchantmentStorageMeta bookmeta = (EnchantmentStorageMeta) book.getItemMeta();
@@ -64,13 +58,27 @@ public class EnchantUI extends GUIBase{
 				bookmeta.getStoredEnchants().keySet().forEach(y -> {
 					im.addEnchant(y, bookmeta.getStoredEnchants().get(y), true);
 				});
+				
+				
+				im.getEnchants().keySet().forEach(k -> {
+					List<String> lore = im.getLore();
+					List<String> BookLore = bookmeta.getLore();
+					if(BookLore == null) return;
+					if(lore == null) {
+						lore = new ArrayList<>();
+					}
+					if(!lore.containsAll(BookLore)) {
+						lore.addAll(BookLore);
+					}
+					im.setLore(lore);
+				});
+				
 				i.setItemMeta(im);
 				
 				this.setItem(6, i);
 				this.refreshItems();
-				return;
 			}
-			
+
 		});
 		
 	}

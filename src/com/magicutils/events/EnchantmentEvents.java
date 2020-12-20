@@ -26,12 +26,27 @@ public class EnchantmentEvents implements Listener {
 			ItemStack i = e.getItem();
 			
 			if(i != null && i.hasItemMeta()) {
-				if(i.getItemMeta().hasEnchant(EnchantWrapper.STAFFWEAPON) && canFire(e.getPlayer())) {
+				if(canFire(e.getPlayer())) {
 					Vector dir = e.getPlayer().getLocation().getDirection();
 					Vector loc = e.getPlayer().getLocation().toVector().add(e.getPlayer().isSneaking() ? new Vector(0,1.2,0) : new Vector(0,1.6,0)).add(dir.clone());
-					BulletHandler.add(new Bullet(Particle.FLAME, Particle.FLAME, 3, 500, dir, loc, e.getPlayer().getWorld(), e.getPlayer()));
-					PlayerFired.put(e.getPlayer(), System.currentTimeMillis());
-					e.setCancelled(true);
+					
+					if(i.getItemMeta().hasEnchant(EnchantWrapper.STAFFWEAPON)) {
+						BulletHandler.add(new Bullet(Particle.FLAME, Particle.SWEEP_ATTACK, 3, 500, 50, dir, loc, e.getPlayer().getWorld(), e.getPlayer()));
+						PlayerFired.put(e.getPlayer(), System.currentTimeMillis());
+						e.setCancelled(true);
+						return;
+					}else if(i.getItemMeta().hasEnchant(EnchantWrapper.ORI)) {
+						BulletHandler.add(new Bullet(Particle.CRIT_MAGIC, Particle.CRIT_MAGIC, 3, 500, 50, dir, loc, e.getPlayer().getWorld(), e.getPlayer()));
+						PlayerFired.put(e.getPlayer(), System.currentTimeMillis());
+						e.setCancelled(true);
+						return;
+					}else if(i.getItemMeta().hasEnchant(EnchantWrapper.ZATGUN)) {
+						BulletHandler.add(new Bullet(Particle.FLAME, Particle.FLAME, 3, 500, 50, dir, loc, e.getPlayer().getWorld(), e.getPlayer()));
+						PlayerFired.put(e.getPlayer(), System.currentTimeMillis());
+						e.setCancelled(true);
+						return;
+					}
+					
 				}
 			}
 			

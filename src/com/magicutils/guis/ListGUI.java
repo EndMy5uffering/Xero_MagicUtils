@@ -1,14 +1,17 @@
 package com.magicutils.guis;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
+import com.google.common.collect.Lists;
 import com.magicutils.easygui.GUIPages;
 import com.magicutils.enchants.EnchantWrapper;
 import com.magicutils.main.MagicUtilsMain;
@@ -42,13 +45,17 @@ public class ListGUI extends GUIPages{
 				}).collect(Collectors.toList());
 			this.setSorceList(items);
 		}else if(mode == 1) {
-			ItemStack staffEnchant = new ItemStack(Material.ENCHANTED_BOOK);
-			EnchantmentStorageMeta staffMeta = (EnchantmentStorageMeta) staffEnchant.getItemMeta();
-			staffMeta.addStoredEnchant(EnchantWrapper.STAFFWEAPON, 1, true);
-			staffMeta.setDisplayName("Staff-Weapon");
-			staffMeta.setLore(List.of(ChatColor.WHITE+"Staff-Weapon"));
-			staffEnchant.setItemMeta(staffMeta);
-			List<ItemStack> items = List.of(staffEnchant);
+			String[] roman = {""," I", " II", " III", " IV", " V", " VI", " VII", " VIII", " IX", " X"};
+			List<ItemStack> items = new ArrayList<ItemStack>();
+			for(int i = 0; i < 11; i++) {
+				items.add(getBook("Staff-Weapon", Lists.newArrayList("Staff-Weapon" + (i <= 11 ? roman[i] : i)), EnchantWrapper.STAFFWEAPON, i));
+			}
+			for(int i = 0; i < 11; i++) {
+				items.add(getBook("Ori-Staff-Weapon", Lists.newArrayList("Ori-Staff-Weapon" + (i <= 11 ? roman[i] : i)), EnchantWrapper.ORI, i));
+			}
+			for(int i = 0; i < 11; i++) {
+				items.add(getBook("Zat", Lists.newArrayList("Zat" + (i <= 11 ? roman[i] : i)), EnchantWrapper.ZATGUN, i));
+			}
 			this.setSorceList(items);
 		}
 		
@@ -62,6 +69,16 @@ public class ListGUI extends GUIPages{
 				
 			}
 		});
+	}
+	
+	public ItemStack getBook(String name, List<String> lore, Enchantment e, int EnchantLvl) {
+		ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
+		EnchantmentStorageMeta bookMeta = (EnchantmentStorageMeta) book.getItemMeta();
+		bookMeta.addStoredEnchant(e, EnchantLvl, true);
+		bookMeta.setDisplayName(name);
+		bookMeta.setLore(lore);
+		book.setItemMeta(bookMeta);
+		return book;
 	}
 	
 }
