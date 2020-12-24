@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -15,6 +16,8 @@ import org.bukkit.util.Vector;
 import com.magicutils.enchants.EnchantWrapper;
 import com.magicutils.packages.Bullet;
 import com.magicutils.packages.BulletHandler;
+import com.magicutils.packages.ZatGunBullet;
+import com.magicutils.potionitemutils.PotionItems;
 
 public class EnchantmentEvents implements Listener {
 
@@ -31,15 +34,15 @@ public class EnchantmentEvents implements Listener {
 					Vector loc = e.getPlayer().getLocation().toVector().add(new Vector(0,e.getPlayer().getEyeHeight(),0)).add(dir.clone());
 					
 					if(i.getItemMeta().hasEnchant(EnchantWrapper.STAFFWEAPON)) {
-						BulletHandler.add(new Bullet(Particle.FLAME, Particle.SWEEP_ATTACK, 1, 500, 50, dir, loc, e.getPlayer().getWorld(), e.getPlayer()));
-						PlayerFired.put(e.getPlayer(), System.currentTimeMillis());
+						BulletHandler.add(new Bullet(Particle.FLAME, Particle.FLAME, 1, i.getItemMeta().getEnchantLevel(EnchantWrapper.STAFFWEAPON)+1, 30, dir, loc, e.getPlayer().getWorld(), e.getPlayer()));
+						PlayerFired.put(e.getPlayer(), System.currentTimeMillis()+500);
 						e.setCancelled(true);
 					}else if(i.getItemMeta().hasEnchant(EnchantWrapper.ORI)) {
-						BulletHandler.add(new Bullet(Particle.CRIT_MAGIC, Particle.CRIT_MAGIC, 1, 500, 50, dir, loc, e.getPlayer().getWorld(), e.getPlayer()));
-						PlayerFired.put(e.getPlayer(), System.currentTimeMillis());
+						BulletHandler.add(new Bullet(Particle.CRIT_MAGIC, Particle.CRIT_MAGIC, 1, i.getItemMeta().getEnchantLevel(EnchantWrapper.ORI)+2, 30, dir, loc, e.getPlayer().getWorld(), e.getPlayer()));
+						PlayerFired.put(e.getPlayer(), System.currentTimeMillis()+1000);
 						e.setCancelled(true);
 					}else if(i.getItemMeta().hasEnchant(EnchantWrapper.ZATGUN)) {
-						BulletHandler.add(new Bullet(Particle.FLAME, Particle.FLAME, 1, 500, 50, dir, loc, e.getPlayer().getWorld(), e.getPlayer()));
+						BulletHandler.add(new ZatGunBullet(Particle.FLAME, Particle.FLAME, 1, i.getItemMeta().getEnchantLevel(EnchantWrapper.ZATGUN)+1, 30, dir, loc, e.getPlayer().getWorld(), e.getPlayer()));
 						PlayerFired.put(e.getPlayer(), System.currentTimeMillis());
 						e.setCancelled(true);
 					}
@@ -50,9 +53,19 @@ public class EnchantmentEvents implements Listener {
 		}
 	}
 	
+	@EventHandler
+	public void onBlockPlaceEvent(BlockPlaceEvent e) {
+		
+		ItemStack inHand = e.getItemInHand();
+		if(inHand == null) return;
+		String tag = PotionItems.getNbtTag(inHand, PotionItems.IDTag);
+		if(tag != null) e.setCancelled(true);
+		e.setBuild(false);
+	}
+	
 	private boolean canFire(Player p) {
 		if(PlayerFired.get(p) == null) return true;
-		return Math.abs(PlayerFired.get(p) - System.currentTimeMillis()) > 0;
+		return PlayerFired.get(p) - System.currentTimeMillis() < 0;
 	}
 	
 }

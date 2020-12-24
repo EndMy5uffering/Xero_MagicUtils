@@ -1,6 +1,5 @@
 package com.magicutils.packages;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -21,13 +20,13 @@ import org.bukkit.util.Vector;
 
 public class Bullet {
 
-	private Vector dir, loc, prefLoc;
-	private World w;
-	private boolean alive = true;
-	private double damage;
-	private Entity firedBy;
-	private int lifeTime;
-	private Particle particle, impactParticle;
+	protected Vector dir, loc, prefLoc;
+	protected World w;
+	protected boolean alive = true;
+	protected double damage;
+	protected Entity firedBy;
+	protected int lifeTime;
+	protected Particle particle, impactParticle;
 	
 //	private boolean debug = false;
 	
@@ -48,7 +47,7 @@ public class Bullet {
 		
 	}
 	
-	public void updateLocation() {
+	protected void updateLocation() {
 		if(!alive) return;
 		if(lifeTime <= 0) {
 			this.alive = false;
@@ -79,33 +78,31 @@ public class Bullet {
 		}else if(b == null && entity == null) {
 			drawProjectile();
 		}
-//		debug = true;
-		
 	}
 	
-	private void impactBlock(Block b) {
+	protected void impactBlock(Block b) {
 		this.impact(slabAABBImpactPoint(b.getBoundingBox()));
 	}
 	
-	private void impactEntity(Entity entity) {
+	protected void impactEntity(Entity entity) {
 		LivingEntity e = (LivingEntity) entity;
 		e.damage(damage, firedBy);
 		Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(firedBy, e, DamageCause.ENTITY_ATTACK, this.damage));
 		this.impact(slabAABBImpactPoint(e.getBoundingBox()));
 	}
 	
-	private void impact(Vector loc) {
+	protected void impact(Vector loc) {
 		this.alive = false;
 		w.getPlayers().forEach(x -> {
-			if(x.getLocation().toVector().subtract(loc).length() <= 100) {
-				PackageManager.SendParticalPackage(x, impactParticle, loc, new Vector(0,0,0), 0.1f,20);
+			if(x.getLocation().toVector().subtract(loc).length() <= 50) {
+				PackageManager.SendParticalPackage(x, impactParticle, loc, new Vector(0,0,0), 0.2f,20);
 			}
 		});
 		
 		for(Entity e : w.getEntities()) {
 			if(e instanceof LivingEntity) {
 				double d = e.getBoundingBox().getCenter().distance(loc);
-				if(d < 50000) {
+				if(d < 2) {
 					LivingEntity entity = (LivingEntity) e;
 					entity.damage(damage*1/d, firedBy);
 					Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(firedBy, entity, DamageCause.ENTITY_ATTACK, this.damage));
@@ -116,12 +113,12 @@ public class Bullet {
 		
 	}
 	
-	private void drawProjectile() {
+	protected void drawProjectile() {
 		w.getPlayers().forEach(x -> {
-			if(x.getLocation().toVector().subtract(loc).length() <= 100 && alive) {
-				double d = 0.5;
+			if(x.getLocation().toVector().subtract(loc).length() <= 50 && alive) {
+				double d = 0.25;
 //				PackageManager.SendParticalPackage(x, particle, loc.clone(), dir, (float)dir.length(),0);
-				for(int i = 0; i < 5; i++) {
+				for(int i = 0; i < 2; i++) {
 					double offx = (new Random().nextDouble()-0.5)*2;
 					double offy = (new Random().nextDouble()-0.5)*2;
 					double offz = (new Random().nextDouble()-0.5)*2;
@@ -131,7 +128,7 @@ public class Bullet {
 		});
 	}
 	
-	private boolean slabAABB(BoundingBox b) {
+	protected boolean slabAABB(BoundingBox b) {
 		double tx1 = (b.getMinX() - this.prefLoc.getX())/dir.getX();
 	    double tx2 = (b.getMaxX() - this.prefLoc.getX())/dir.getX();
 	    double ty1 = (b.getMinY() - this.prefLoc.getY())/dir.getY();
@@ -142,10 +139,10 @@ public class Bullet {
 	    double tmin = Math.max(Math.max(Math.min(tx1, tx2), Math.min(ty1, ty2)), Math.min(tz1, tz2));
 	    double tmax = Math.min(Math.min(Math.max(tx1, tx2), Math.max(ty1, ty2)), Math.max(tz1, tz2));
 	    
-	    return tmax >= tmin && tmin < 2 && tmax < 2 && tmin > -2 && tmax > -2;
+	    return tmax >= tmin && tmax < 2 && tmin > -2;
 	}
 	
-	private double getClosestTmin(BoundingBox b) {
+	protected double getClosestTmin(BoundingBox b) {
 		double tx1 = (b.getMinX() - this.prefLoc.getX())/dir.getX();
 	    double tx2 = (b.getMaxX() - this.prefLoc.getX())/dir.getX();
 	    double ty1 = (b.getMinY() - this.prefLoc.getY())/dir.getY();
@@ -156,7 +153,7 @@ public class Bullet {
 	    return Math.max(Math.max(Math.min(tx1, tx2), Math.min(ty1, ty2)), Math.min(tz1, tz2));
 	}
 	
-	private Vector slabAABBImpactPoint(BoundingBox b) {
+	protected Vector slabAABBImpactPoint(BoundingBox b) {
 		double tx1 = (b.getMinX() - this.prefLoc.getX())/dir.getX();
 	    double tx2 = (b.getMaxX() - this.prefLoc.getX())/dir.getX();
 	    double ty1 = (b.getMinY() - this.prefLoc.getY())/dir.getY();
@@ -169,7 +166,7 @@ public class Bullet {
 	    return this.prefLoc.clone().add(this.dir.clone().multiply(tmin));
 	}
 	
-	private Block IntersectedBlock() {
+	protected Block IntersectedBlock() {
 		
 		Set<Block> possibleIntersect = new HashSet<>();
 		double l = dir.length();
@@ -192,7 +189,6 @@ public class Bullet {
 		}
 		
 		for(Block b : possibleIntersect) {
-//			if(debug)PackageManager.SendBlockChangePackage(b, Material.GLASS, (Player)this.firedBy);
 			if(slabAABB(b.getBoundingBox())) {
 				return b;
 			}
@@ -201,7 +197,7 @@ public class Bullet {
 		return null;
 	}
 	
-	private Entity getIntersectedEntity() {
+	protected Entity getIntersectedEntity() {
 		for(Entity e : w.getEntities()) {
 			if(!isAlive()) return null;
 			if(!(e instanceof LivingEntity)) continue;
@@ -213,15 +209,15 @@ public class Bullet {
 		return null;
 	}
 	
-	public double dot(double x1, double x2, double x3, double y1, double y2, double y3) {
+	protected double dot(double x1, double x2, double x3, double y1, double y2, double y3) {
 		return (x1*y1)+(x2*y2)+(x3*y3);
 	}
 
-	public boolean isAlive() {
+	protected boolean isAlive() {
 		return alive;
 	}
 
-	public void setAlive(boolean alive) {
+	protected void setAlive(boolean alive) {
 		this.alive = alive;
 	}
 	

@@ -56,21 +56,18 @@ public class EnchantUI extends GUIBase{
 				ItemMeta im = i.getItemMeta();
 				
 				bookmeta.getStoredEnchants().keySet().forEach(y -> {
-					im.addEnchant(y, bookmeta.getStoredEnchants().get(y), true);
-				});
-				
-				
-				im.getEnchants().keySet().forEach(k -> {
-					List<String> lore = im.getLore();
-					List<String> BookLore = bookmeta.getLore();
-					if(BookLore == null) return;
-					if(lore == null) {
-						lore = new ArrayList<>();
-					}
-					if(!lore.containsAll(BookLore)) {
-						lore.addAll(BookLore);
-					}
-					im.setLore(lore);
+					if(im.hasEnchant(y)) return;
+						im.addEnchant(y, bookmeta.getStoredEnchants().get(y), true);
+						List<String> lore = im.getLore();
+						List<String> BookLore = bookmeta.getLore();
+						if(BookLore == null) return;
+						if(lore == null) {
+							lore = new ArrayList<>();
+						}
+						if(!lore.containsAll(BookLore)) {
+							lore.addAll(BookLore);
+						}
+						im.setLore(lore);
 				});
 				
 				i.setItemMeta(im);
