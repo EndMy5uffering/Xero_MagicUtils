@@ -59,8 +59,10 @@ public class EnchantmentEvents implements Listener {
 		ItemStack inHand = e.getItemInHand();
 		if(inHand == null) return;
 		String tag = PotionItems.getNbtTag(inHand, PotionItems.IDTag);
-		if(tag != null) e.setCancelled(true);
-		e.setBuild(false);
+		if(tag != null && tag != "" && tag != "null") {
+			e.setCancelled(true);
+			e.setBuild(false);
+		}
 	}
 	
 	private boolean canFire(Player p) {
