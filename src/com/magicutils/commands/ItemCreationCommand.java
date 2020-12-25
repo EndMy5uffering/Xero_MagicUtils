@@ -330,7 +330,7 @@ public class ItemCreationCommand implements TabExecutor{
 		if(args.length == 2) {
 			switch(args[0].toLowerCase()) {
 			case "addenchant":
-				return List.of(EnchantWrapper.STAFFWEAPON.getKey().toString());
+				return null;
 			case "addeffect":
 				return PotionEffects;
 			case "set":
