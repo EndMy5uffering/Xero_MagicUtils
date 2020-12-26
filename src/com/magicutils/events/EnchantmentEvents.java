@@ -3,6 +3,7 @@ package com.magicutils.events;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,6 +19,7 @@ import com.magicutils.packages.Bullet;
 import com.magicutils.packages.BulletHandler;
 import com.magicutils.packages.ZatGunBullet;
 import com.magicutils.potionitemutils.PotionItems;
+
 
 public class EnchantmentEvents implements Listener {
 
@@ -49,19 +51,16 @@ public class EnchantmentEvents implements Listener {
 					
 				}
 			}
-			
 		}
 	}
 	
 	@EventHandler
 	public void onBlockPlaceEvent(BlockPlaceEvent e) {
-		
 		ItemStack inHand = e.getItemInHand();
-		if(inHand == null) return;
+		if(inHand == null || inHand.getType().equals(Material.AIR)) return;
 		String tag = PotionItems.getNbtTag(inHand, PotionItems.IDTag);
 		if(tag != null && tag != "" && tag != "null") {
 			e.setCancelled(true);
-			e.setBuild(false);
 		}
 	}
 	

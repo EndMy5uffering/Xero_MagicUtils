@@ -318,10 +318,8 @@ public class ItemCreationCommand implements TabExecutor{
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
 		if(!(sender instanceof Player)) {
-			return null;
+			return Lists.newArrayList("");
 		}
-		
-		Player player = (Player) sender;
 		
 		if(args.length == 1) {
 			return Lists.newArrayList("create", "addeffect", "set", "list", "save", "remove", "update", "sync", "addenchant");
@@ -330,7 +328,7 @@ public class ItemCreationCommand implements TabExecutor{
 		if(args.length == 2) {
 			switch(args[0].toLowerCase()) {
 			case "addenchant":
-				return null;
+				return Lists.newArrayList("");
 			case "addeffect":
 				return PotionEffects;
 			case "set":
@@ -342,7 +340,7 @@ public class ItemCreationCommand implements TabExecutor{
 			case "remove":
 				return Lists.newArrayList("effect");
 				default:
-					return null;
+					return Lists.newArrayList("");
 			}
 		}
 		
@@ -353,11 +351,11 @@ public class ItemCreationCommand implements TabExecutor{
 			case "remove":
 				return PotionEffects;
 				default:
-					return null;
+					return Lists.newArrayList("");
 			}
 		}
 		
-		return null;
+		return Lists.newArrayList("");
 	}
 	
 	private boolean checkArgs(Player p, String[] args, int expected, String sampleCommand) {
