@@ -95,18 +95,16 @@ public class ItemDatabase {
 				ResultSet serialization = DatabaseAccess.getData(info, "SELECT * FROM potionitemserialized WHERE itemid='" + rs.getString(1) + "';");
 				
 				ArrayList<SerializationPart> parts = new ArrayList<>();
-				
 				while(serialization.next()) {
 					parts.add(new SerializationPart(serialization.getString(3), serialization.getInt(4), serialization.getString(2)));
 				}
 				
 				ItemStack item = PotionItems.deserializeFromString(SerializationPart.getSerializationFromList(parts));
-				
 				MagicUtilsMain.pim.addPotionItem(new PotionItems(item, PotionItems.Slot.valueOf(rs.getString(5)), rs.getString(1)));
+			
 			}
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -119,7 +117,6 @@ public class ItemDatabase {
 			}
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -129,7 +126,6 @@ public class ItemDatabase {
 		try {
 			DatabaseAccess.executeQuerry(info, q);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

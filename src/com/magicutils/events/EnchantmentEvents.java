@@ -48,7 +48,6 @@ public class EnchantmentEvents implements Listener {
 						PlayerFired.put(e.getPlayer(), System.currentTimeMillis());
 						e.setCancelled(true);
 					}
-					
 				}
 			}
 		}
