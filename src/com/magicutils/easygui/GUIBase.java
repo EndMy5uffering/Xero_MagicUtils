@@ -61,14 +61,15 @@ public abstract class GUIBase {
 	private int itemCounter = -1;
 	public ItemStack getTagedItem(ItemStack item) {
 		itemCounter++;
-		return setNbtTag(item, "Item:" + itemCounter);
+		return setNbtTag(item, "CustomGUIID", "Item:" + itemCounter);
 	}
 	
-	private ItemStack setNbtTag(ItemStack item, String tag) {
-		net.minecraft.server.v1_16_R3.ItemStack nbtItem = org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack.asNMSCopy(item);
-		net.minecraft.server.v1_16_R3.NBTTagCompound nbtcomp = (nbtItem.hasTag()) ? nbtItem.getTag() : new net.minecraft.server.v1_16_R3.NBTTagCompound();
-		nbtcomp.set("CustomGUIID", net.minecraft.server.v1_16_R3.NBTTagString.a(tag));
-		return org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack.asBukkitCopy(nbtItem);
+	public static ItemStack setNbtTag(ItemStack item, String tag, String value) {
+		net.minecraft.world.item.ItemStack nbtItem = org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack.asNMSCopy(item);
+		net.minecraft.nbt.NBTTagCompound nbtcomp = (nbtItem.hasTag()) ? nbtItem.getTag() : new net.minecraft.nbt.NBTTagCompound();
+		nbtcomp.set(tag, net.minecraft.nbt.NBTTagString.a(value));
+		nbtItem.setTag(nbtcomp);
+		return org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack.asBukkitCopy(nbtItem);
 	}
 	
 	public void attatchObject(int index, Object object) {

@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -15,8 +14,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
-
-import com.magicutils.main.MagicUtilsMain;
 
 public class PotionItems {
 	
@@ -35,7 +32,6 @@ public class PotionItems {
 		this.id = UUID.randomUUID().toString();
 		this.item = PotionItems.setNbtTag(item, IDTag, id);
 		this.slot = slot;
-		ItemMeta m = item.getItemMeta();
 	}
 	
 	public PotionItems(ItemStack item, Slot slot, String id) {
@@ -115,9 +111,9 @@ public class PotionItems {
 	}
 	
 	public static String getNbtTag(ItemStack item, String tag) {
-		net.minecraft.server.v1_16_R3.ItemStack nbtItem = org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack.asNMSCopy(item);
-		net.minecraft.server.v1_16_R3.NBTTagCompound nbtcomp = nbtItem.getTag();
-		return nbtcomp == null ? "null" : nbtcomp.getString(tag);
+		net.minecraft.world.item.ItemStack nbtItem = org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack.asNMSCopy(item);
+		net.minecraft.nbt.NBTTagCompound nbtcomp = nbtItem.getTag();
+		return nbtcomp == null ? "" : nbtcomp.getString(tag);
 	}
 	
 	public static String getSerializedString(ItemStack stack) {
@@ -151,11 +147,11 @@ public class PotionItems {
 	}
 	
 	public static ItemStack setNbtTag(ItemStack item, String tag, String value) {
-		net.minecraft.server.v1_16_R3.ItemStack nbtItem = org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack.asNMSCopy(item);
-		net.minecraft.server.v1_16_R3.NBTTagCompound nbtcomp = (nbtItem.hasTag()) ? nbtItem.getTag() : new net.minecraft.server.v1_16_R3.NBTTagCompound();
-		nbtcomp.set(tag, net.minecraft.server.v1_16_R3.NBTTagString.a(value));
+		net.minecraft.world.item.ItemStack nbtItem = org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack.asNMSCopy(item);
+		net.minecraft.nbt.NBTTagCompound nbtcomp = (nbtItem.hasTag()) ? nbtItem.getTag() : new net.minecraft.nbt.NBTTagCompound();
+		nbtcomp.set(tag, net.minecraft.nbt.NBTTagString.a(value));
 		nbtItem.setTag(nbtcomp);
-		return org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack.asBukkitCopy(nbtItem);
+		return org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack.asBukkitCopy(nbtItem);
 	}
 	
 	public static ItemEffect getItemEffectFromArgs(String effect, String lvl) {

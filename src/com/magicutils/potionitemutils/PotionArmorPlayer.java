@@ -2,21 +2,14 @@ package com.magicutils.potionitemutils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.google.common.collect.Lists;
-import com.magicutils.easygui.InventoryManager;
 import com.magicutils.main.MagicUtilsMain;
 import com.magicutils.potionitemutils.PotionItems.Slot;
-
-import net.minecraft.server.v1_16_R3.PlayerInventory;
 
 public class PotionArmorPlayer {
 	

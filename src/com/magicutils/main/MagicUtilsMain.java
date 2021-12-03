@@ -10,7 +10,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,8 +21,6 @@ import com.magicutils.events.EnchantmentEvents;
 import com.magicutils.packages.BulletHandler;
 import com.magicutils.potionitemutils.InventoryObserver;
 import com.magicutils.potionitemutils.PotionItemManager;
-
-import net.minecraft.server.v1_16_R3.Enchantment;
 
 public class MagicUtilsMain extends JavaPlugin implements Listener{
 
